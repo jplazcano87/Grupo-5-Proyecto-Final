@@ -5,6 +5,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 db = SQLAlchemy()
 
@@ -12,7 +16,10 @@ db = SQLAlchemy()
 def create_app():
     open_ia = OpenAI()
     app = Flask(__name__, template_folder='templates')
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./app.db'
+    turso_database_url = os.environ.get("TURSO_DATABASE_URL")
+    turso_auth_token = os.environ.get("TURSO_AUTH_TOKEN")
+    db_url = f"sqlite+{turso_database_url}/?authToken={turso_auth_token}&secure=true"
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 
     app.secret_key = 'secret_key'
 
