@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}
+plAI (BETA)
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Bienvenido {{ username }}</a>
+
+    <div class="navbar-nav" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{{ url_for('profile')}}">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<section class="container-fluid py-5 h-100" style="background-color: #30B9DC;">
+  <div class="container-fluid py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card mb-3" style="border-radius: .8rem;">
+
+          <div class="container col-xxl-8 px-4 py-5">
+            {% for message in messages %}
+            {% if message.author == 'assistant' %}
+            <div class="d-flex flex-row justify-content-start mb-4">
+              <img class="bg-white" src="{{ url_for('static', filename='plai-chat.png') }}" alt="avatar 1"
+                style="width: 45px; height: 100%;">
+              <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
+                <p class="small mb-0">{{message.content}}</p>
+              </div>
+            </div>
+            {% else %}
+            <div class="d-flex flex-row justify-content-end mb-4">
+              <div class="p-3 me-3 border bg-body-tertiary" style="border-radius: 15px;">
+                <p class="small mb-0">{{message.content}}</p>
+              </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+
+
+            <form method="POST">
+              <div class="d-flex flex-wrap">
+                <input type="submit" class="btn btn-primary m-1" id="send-message" name="intent"
+                  value="Recomienda algo al azar" style="background-color: #30B9DC; color: #0A2E43;" />
+                <input type="submit" class="btn btn-primary m-1" id="send-message" name="intent"
+                  value="Recomieda series de acción" style="background-color: #30B9DC; color: #0A2E43;" />
+                <input type="submit" class="btn btn-primary m-1" id="send-message" name="intent"
+                  value="Recomieda películas de suspenso" style="background-color: #30B9DC; color: #0A2E43;" />
+              </div>
+            </form>
+            <form method="POST">
+              <div class="input-group mb-3">
+                <input name="message" required="required" class="form-control form-control-lg"
+                  placeholder="Enviar mensaje a plAI" aria-label="Tu mensaje" aria-describedby="send-message" />
+                <input type="submit" class="btn btn-lg" id="send-message" name="intent" value="Enviar"
+                  style="background-color: #30B9DC; color: #0A2E43;" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    window.scrollTo(0, document.body.scrollHeight);
+  });
+</script>
+
+{% endblock %}

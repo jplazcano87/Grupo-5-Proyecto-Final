@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Perfil plAI{% endblock %}
+
+{% block content %}
+<section class="vh-100" style="background-color: #30B9DC;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col col-xl-10">
+          <div class="card mb-3" style="border-radius: .8rem;">
+            <div class="row g-0">
+              <div class="col-md-4 gradient-custom text-center"
+                style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+                <img src="{{ url_for('static', filename='avatar2.png') }}"
+                  alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+                <h4>Tulio Triviño</h4>
+                <p>Periodista</p>
+                <i class="far fa-edit mb-5"></i>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body p-4">
+                  <h3>Información personal</h3>
+                  <hr class="mt-0 mb-4">
+                  <div class="row pt-1">
+                    <div class="col-6 mb-3">
+                      <h6>Email</h6>
+                      <p class="text-muted">info@example.com</p>
+                    </div>
+                    <div class="col-6 mb-3">
+                      <h6>Teléfono</h6>
+                      <p class="text-muted">123 456 789</p>
+                    </div>
+                  </div>
+                  <h3>Favoritos</h3>
+                  <hr class="mt-0 mb-4">
+                  <div class="row pt-1">
+                    <div class="col-6 mb-3">
+                      <h6>Preferencias</h6>
+                      <p class="text-muted">Series, documentales, comedia</p>
+                    </div>
+                    <div class="col-6 mb-3">
+                      <h6>Película o serie favorita</h6>
+                      <p class="text-muted">The good place</p>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-start">
+                    <a href="#!"><i class="fab fa-facebook-f fa-lg me-3"></i></a>
+                    <a href="#!"><i class="fab fa-twitter fa-lg me-3"></i></a>
+                    <a href="#!"><i class="fab fa-instagram fa-lg"></i></a>
+                  </div>
+                  <div class="mt-4">
+                    <button data-mdb-button-init data-mdb-ripple-init class="btn btn-lg mb-1" style="background-color: #30B9DC; color: #0A2E43;">Editar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

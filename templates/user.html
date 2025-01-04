@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ username }}
+{% endblock %}
+
+{% block content %}
+    <h1>Perfil de {{username}}</h1>
+    <h2>Películas favoritas</h2>
+    <ul>
+        {% for movie in favorite_movies %}
+            <li>{{ movie }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
