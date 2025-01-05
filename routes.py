@@ -47,8 +47,8 @@ def register_routes(app, db, bcrypt, open_ia):
                 email = data.get('email')
                 password = data.get('password')
 
-            user = db.session.query(User).filter_by(email=email).first()
-            print(f'User: {user}, password: {password}')
+                user = db.session.query(User).filter_by(email=email).first()
+                print(f'User: {user}, password: {password}')
             if user and bcrypt.check_password_hash(user.password, password):
                 login_user(user)
                 print(f'User logged ok: {user}')
@@ -71,27 +71,23 @@ def register_routes(app, db, bcrypt, open_ia):
             return render_template('chat.html', messages=user.messages,  username=user.username)
 
         intent = request.form.get('intent')
-        intent_random = request.form.get('intent_random')
 
         intents = {
             'Recomienda algo al azar': 'Recomiéndame una película al azar',
             'Recomieda series de acción': 'Recomiéndame series de acción',
             'Recomieda películas de suspenso': 'Recomiéndame una película de suspenso',
-            'Comedia': 'Recomiéndame una película de comedia',
             'Enviar': request.form.get('message')
         }
 
         if intent in intents:
             user_message = intents[intent]
-
-            # Guardar nuevo mensaje en la BD
             db.session.add(Message(content=user_message,
                            author="user", user=user))
             db.session.commit()
 
             messages_for_llm = [{
                 "role": "system",
-                "content": "Eres un chatbot que recomienda películas, te llamas 'Next Moby'. Tu rol es responder recomendaciones de manera breve y concisa. No repitas recomendaciones.",
+                "content": f"Eres un chatbot que recomienda películas, te llamas 'Next Moby'. Tu rol es responder recomendaciones de manera breve y concisa. No repitas recomendaciones. usa el genéro del usuario {user.gender}  y su  fecha de nacimiento {user.birthdate} para recomendar películas. ",
             }]
 
             for message in user.messages:
@@ -112,47 +108,6 @@ def register_routes(app, db, bcrypt, open_ia):
             db.session.commit()
 
             return render_template('chat.html', messages=user.messages, username=user.username)
-
-    @app.route('/user/<username>')
-    def user(username):
-        favorite_movies = [
-            'The Shawshank Redemption',
-            'The Godfather',
-            'The Dark Knight',
-        ]
-        return render_template('user.html', username=username, favorite_movies=favorite_movies)
-
-    @app.post('/recommend')
-    def recommend():
-        user = db.session.query(User).first()
-        data = request.get_json()
-        user_message = data['message']
-        new_message = Message(content=user_message, author="user", user=user)
-        db.session.add(new_message)
-        db.session.commit()
-
-        messages_for_llm = [{
-            "role": "system",
-            "content": "Eres un chatbot que recomienda películas, te llamas 'Next Moby'. Tu rol es responder recomendaciones de manera breve y concisa. No repitas recomendaciones.",
-        }]
-
-        for message in user.messages:
-            messages_for_llm.append({
-                "role": message.author,
-                "content": message.content,
-            })
-
-        chat_completion = client.chat.completions.create(
-            messages=messages_for_llm,
-            model="gpt-4o",
-        )
-
-        message = chat_completion.choices[0].message.content
-
-        return {
-            'recommendation': message,
-            'tokens': chat_completion.usage.total_tokens,
-        }
 
     @app.route('/profile')
     @login_required

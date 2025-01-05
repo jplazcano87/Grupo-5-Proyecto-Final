@@ -1,12 +1,13 @@
-from flask import Flask
-from openai import OpenAI
-from flask_bootstrap import Bootstrap5
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager
-from flask_bcrypt import Bcrypt
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
+from flask import Flask
+from flask_bcrypt import Bcrypt
+from flask_bootstrap import Bootstrap5
+from flask_login import LoginManager
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from openai import OpenAI
 
 load_dotenv()
 
@@ -23,7 +24,7 @@ def create_app():
 
     app.secret_key = 'secret_key'
 
-    bootstrap = Bootstrap5(app)
+    Bootstrap5(app)
 
     db.init_app(app)
 

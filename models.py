@@ -1,19 +1,10 @@
-from sqlalchemy.orm import relationship
-from app import db
+from datetime import datetime
 
 from flask_login import UserMixin
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy.orm import relationship
 
-from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    Text,
-    DateTime,
-    ForeignKey,
-)
-from datetime import datetime, timezone
-
-# print(username, email, password, repeat_password, birthdate, gender)
+from app import db
 
 
 class User(db.Model, UserMixin):
