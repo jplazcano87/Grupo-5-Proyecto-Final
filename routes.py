@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for
+from flask import jsonify, render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, current_user, login_required
 from models import User, Message
 
@@ -113,10 +113,32 @@ def register_routes(app, db, bcrypt, open_ia):
     @login_required
     def profile():
         if current_user.is_authenticated:
-            return render_template('profile.html')
+            return render_template('edit_user.html')
         return redirect(url_for('login'))
 
     @app.route('/logout', methods=['GET'])
     def logout():
         logout_user()
         return redirect(url_for('login'))
+
+    @app.route('/user_data', methods=['GET'])
+    @login_required
+    def user_data():
+        print(f'Current user: {current_user}')
+        data = {
+            "username": current_user.username,
+            "email": current_user.email,
+            "birthdate": current_user.birthdate,
+            "gender": current_user.gender
+        }
+        return jsonify(data)
+
+    @app.route('/update_birthdate_age', methods=['POST'])
+    @login_required
+    def update_birthdate_age():
+        new_birthdate = request.form.get('birthdate')
+        new_gender = request.form.get('gender')
+        current_user.birthdate = new_birthdate
+        current_user.gender = new_gender
+        db.session.commit()
+        return jsonify({"message": "Birthdate and age updated successfully"}), 200
