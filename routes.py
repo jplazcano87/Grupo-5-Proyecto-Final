@@ -141,4 +141,4 @@ def register_routes(app, db, bcrypt, open_ia):
         current_user.birthdate = new_birthdate
         current_user.gender = new_gender
         db.session.commit()
-        return jsonify({"message": "Birthdate and age updated successfully"}), 200
+        return render_template('edit_user.html', success=True)
