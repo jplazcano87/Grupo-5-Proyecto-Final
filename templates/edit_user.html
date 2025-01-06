@@ -70,7 +70,6 @@
             .then(data => {
                 document.getElementById('form3Example1q').value = data.username || '';
                 document.getElementById('form2Example17').value = data.email || '';
-                document.getElementById('form2Example27').value = data.password || '';
                 document.getElementById('birthdate').value = data.birthdate || '';
                 document.getElementsByName('gender')[0].value = data.gender || '';
             })
