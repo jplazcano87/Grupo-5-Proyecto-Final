@@ -1,6 +1,52 @@
+import json
 from flask import jsonify, render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, current_user, login_required
 from models import User, Message
+from movies import where_to_watch
+
+
+tools = [
+    {
+        'type': 'function',
+        'function': {
+            "name": "where_to_watch",
+            "description": "Returns a list of platforms where a specified tv show can be watched. don't use for movies",
+            "parameters": {
+                "type": "object",
+                "required": [
+                    "tv_show_name"
+                ],
+                "properties": {
+                    "tv_show_name": {
+                        "type": "string",
+                        "description": "The name of the tv show to search for"
+                    }
+                },
+                "additionalProperties": False
+            }
+        },
+    },
+    {
+        'type': 'function',
+        'function': {
+            "name": "search_movie_or_tv_show",
+            "description": "Returns information about a specified movie or TV show.",
+            "parameters": {
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the movie/tv show to search for"
+                    }
+                },
+                "additionalProperties": False
+            }
+        },
+    }
+]
 
 
 def register_routes(app, db, bcrypt, open_ia):
@@ -87,7 +133,7 @@ def register_routes(app, db, bcrypt, open_ia):
 
             messages_for_llm = [{
                 "role": "system",
-                "content": f"Eres un chatbot que recomienda películas, te llamas 'Next Moby'. Tu rol es responder recomendaciones de manera breve y concisa. No repitas recomendaciones. usa el genéro del usuario {user.gender}  y su  fecha de nacimiento {user.birthdate} para recomendar películas. ",
+                "content": f"Eres un chatbot que recomienda películas, te llamas 'PlaIA'. Tu rol es responder recomendaciones de manera breve y concisa. No repitas recomendaciones. usa el genéro del usuario {user.gender}  y su  fecha de nacimiento {user.birthdate} para recomendar películas. ",
             }]
 
             for message in user.messages:
@@ -99,10 +145,27 @@ def register_routes(app, db, bcrypt, open_ia):
             chat_completion = open_ia.chat.completions.create(
                 messages=messages_for_llm,
                 model="gpt-4o",
-                temperature=1
+                temperature=1,
+                tools=tools
             )
 
-            model_recommendation = chat_completion.choices[0].message.content
+            if chat_completion.choices[0].message.tool_calls:
+                print("function calling tools")
+                tool_call = chat_completion.choices[0].message.tool_calls[0]
+                if tool_call.function.name == 'where_to_watch':
+                    arguments = json.loads(tool_call.function.arguments)
+                    name = arguments['tv_show_name']
+                    model_recommendation = where_to_watch(name)
+                    print("model_recommendation", model_recommendation)
+                    if model_recommendation is None:
+                        model_recommendation = "No estoy seguro de dónde puedes ver esta película o serie :("
+                        print("model_recommendation from tools is none",
+                              model_recommendation)
+                else:
+                    model_recommendation = "No estoy seguro de dónde puedes ver esta película o serie :("
+            else:
+                model_recommendation = chat_completion.choices[0].message.content
+
             db.session.add(Message(content=model_recommendation,
                                    author="assistant", user=user))
             db.session.commit()
