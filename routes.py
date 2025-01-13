@@ -2,7 +2,7 @@ import json
 from flask import jsonify, render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, current_user, login_required
 from models import User, Message
-from movies import where_to_watch
+from movies import where_to_watch, where_to_watch_movie
 
 
 tools = [
@@ -29,17 +29,17 @@ tools = [
     {
         'type': 'function',
         'function': {
-            "name": "search_movie_or_tv_show",
-            "description": "Returns information about a specified movie or TV show.",
+            "name": "where_to_watch_movie",
+            "description": "Returns information about a specified movie. don't use for tv shows",
             "parameters": {
                 "type": "object",
                 "required": [
-                    "name"
+                    "movie_name"
                 ],
                 "properties": {
-                    "name": {
+                    "movie_name": {
                         "type": "string",
-                        "description": "The name of the movie/tv show to search for"
+                        "movie_name": "The name of the movie show to search for"
                     }
                 },
                 "additionalProperties": False
@@ -153,14 +153,28 @@ def register_routes(app, db, bcrypt, open_ia):
                 print("function calling tools")
                 tool_call = chat_completion.choices[0].message.tool_calls[0]
                 if tool_call.function.name == 'where_to_watch':
+                    print("function calling where_to_watch")
                     arguments = json.loads(tool_call.function.arguments)
                     name = arguments['tv_show_name']
                     model_recommendation = where_to_watch(name)
                     print("model_recommendation", model_recommendation)
-                    if model_recommendation is None:
+                    if model_recommendation == "":
                         model_recommendation = "No estoy seguro de dónde puedes ver esta película o serie :("
-                        print("model_recommendation from tools is none",
+                        print("model_recommendation from tools is empty",
                               model_recommendation)
+                elif tool_call.function.name == 'where_to_watch_movie':
+                    print("function calling where_to_watch_movie")
+                    arguments = json.loads(
+                        tool_call.function.arguments)
+                    print("arguments", arguments)
+                    name = arguments['movie_name']
+                    model_recommendation = where_to_watch_movie(name)
+                    print("model_recommendation", model_recommendation)
+                    if model_recommendation == "":
+                        model_recommendation = "No estoy seguro de dónde puedes ver esta película o serie :("
+                        print("model_recommendation from tools is empty",
+                              model_recommendation)
+
                 else:
                     model_recommendation = "No estoy seguro de dónde puedes ver esta película o serie :("
             else:
