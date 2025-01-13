@@ -1,55 +1,44 @@
 # Proyecto de curso
 
-Este es el proyecto del grupo 5 integrado por
+Este repositorio contiene el proyecto final del Grupo 5:
 
 - Bárbara Castillo
 - Andrés Ruggieri Lusso
 - Juan Pablo Lazcano
 
-## ¿Qué es lo que construiremos?
+## Descripción
 
-**Plai**, una aplicación web donde puedes obtener recomendaciones de películas.
+Construimos **Plai**, una aplicación web que brinda recomendaciones de películas. La aplicación usa:
 
-Stack tecnológico:
-
-- [Flask](https://flask.palletsprojects.com/en/stable/) para la aplicación web.
-- [Boostrap](https://getbootstrap.com/) como librería de componentes (con [Bootstrap Flask](https://bootstrap-flask.readthedocs.io/en/stable/)).
-- [OpenAI API](https://platform.openai.com/) para la interacción con las personas que usan la aplicación.
+- [Flask](https://flask.palletsprojects.com/en/stable/) para la implementación web.
+- [Bootstrap](https://getbootstrap.com/) con [Bootstrap Flask](https://bootstrap-flask.readthedocs.io/en/stable/) para la interfaz.
+- [OpenAI API](https://platform.openai.com/) para la interacción con los usuarios.
 
 ## Instrucciones
 
 ### Instalación
 
-Una vez descargado el proyecto, crear Virtual environment:
-
-```sh
-python3 -m venv venv
-```
-
-Activarlo:
-
-```sh
-source venv/bin/activate
-```
-
-Instalar dependencias:
-
-```sh
-pip install -r requirements.txt
-```
+1. Crea un entorno virtual:
+    ```sh
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+2. Instala las dependencias del proyecto:
+    ```sh
+    pip install -r requirements.txt
+    ```
 
 ### Ejecución
 
-Una vez ya lo instalaste, recuerda activar el Virtual Env:
-
-```sh
-source venv/bin/activate
-```
-
-Y luego ya puedes ejecutar el proyecto localmente con
-
-```sh
-flask run --debug
-```
+1. Activa el entorno virtual:
+    ```sh
+    source venv/bin/activate
+    ```
+2. Ejecuta la aplicación:
+    ```sh
+    flask run --debug
+    ```
 
 ### Agregar a tu propio GitHub
+
+Haz un fork o clona el repositorio en tu cuenta y contribuye con mejoras según sea necesario. Proyecto de curso

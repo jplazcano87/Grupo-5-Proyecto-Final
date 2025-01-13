@@ -27,7 +27,7 @@ def register_routes(app, db, bcrypt, open_ia):
                 password).decode('utf-8'), birthdate=birthdate, gender=gender)
 
             message = Message(
-                content="Hola! Soy Muby, un recomendador de películas. ¿En qué te puedo ayudar?", author="assistant", user=user)
+                content="Hola! Soy plaIA, un recomendador de películas. ¿En qué te puedo ayudar?", author="assistant", user=user)
 
             db.session.add(user)
             db.session.add(message)
@@ -48,10 +48,10 @@ def register_routes(app, db, bcrypt, open_ia):
                 password = data.get('password')
 
                 user = db.session.query(User).filter_by(email=email).first()
-                print(f'User: {user}, password: {password}')
-            if user and bcrypt.check_password_hash(user.password, password):
-                login_user(user)
-                print(f'User logged ok: {user}')
+
+                if user and bcrypt.check_password_hash(user.password, password):
+                    login_user(user)
+
                 return redirect(url_for('chat'))
 
             return 'Invalid credentials', 401
