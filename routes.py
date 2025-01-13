@@ -2,7 +2,7 @@ import json
 from flask import jsonify, render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, current_user, login_required
 from models import User, Message
-from movies import where_to_watch, where_to_watch_movie
+from movies import where_to_watch, where_to_watch_movie, get_movie_or_show_trailer
 
 
 tools = [
@@ -40,6 +40,26 @@ tools = [
                     "movie_name": {
                         "type": "string",
                         "movie_name": "The name of the movie show to search for"
+                    }
+                },
+                "additionalProperties": False
+            }
+        },
+    },
+    {
+        'type': 'function',
+        'function': {
+            "name": "get_movie_or_show_trailer",
+            "description": "Returns a youtube link to the trailer of a specified movie or tv show",
+            "parameters": {
+                "type": "object",
+                "required": [
+                    "movie_or_show_name"
+                ],
+                "properties": {
+                    "movie_or_show_name": {
+                        "type": "string",
+                        "movie_or_show_name": "The name of the movie show or tv show to search for"
                     }
                 },
                 "additionalProperties": False
@@ -160,7 +180,12 @@ def register_routes(app, db, bcrypt, open_ia):
                         tool_call.function.arguments)
                     name = arguments['movie_name']
                     model_recommendation = where_to_watch_movie(name)
-
+                elif tool_call.function.name == 'get_movie_or_show_trailer':
+                    arguments = json.loads(
+                        tool_call.function.arguments)
+                    name = arguments['movie_or_show_name']
+                    model_recommendation = get_movie_or_show_trailer(
+                        name)
                 else:
                     model_recommendation = "No estoy seguro de dónde puedes ver esta película o serie :("
             else:

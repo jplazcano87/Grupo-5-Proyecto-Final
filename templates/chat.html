@@ -35,7 +35,11 @@ plAI (BETA)
               <img class="bg-white" src="{{ url_for('static', filename='plai-chat.png') }}" alt="avatar 1"
                 style="width: 45px; height: 100%;">
               <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
-                <p class="small mb-0">{{message.content}}</p>
+                {% if '<' in message.content and '>' in message.content %}
+                  {{ message.content | safe }}
+                {% else %}
+                  <p class="small mb-0">{{message.content}}</p>
+                {% endif %}
               </div>
             </div>
             {% else %}
