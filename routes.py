@@ -150,30 +150,16 @@ def register_routes(app, db, bcrypt, open_ia):
             )
 
             if chat_completion.choices[0].message.tool_calls:
-                print("function calling tools")
                 tool_call = chat_completion.choices[0].message.tool_calls[0]
                 if tool_call.function.name == 'where_to_watch':
-                    print("function calling where_to_watch")
                     arguments = json.loads(tool_call.function.arguments)
                     name = arguments['tv_show_name']
                     model_recommendation = where_to_watch(name)
-                    print("model_recommendation", model_recommendation)
-                    if model_recommendation == "":
-                        model_recommendation = "No estoy seguro de dónde puedes ver esta película o serie :("
-                        print("model_recommendation from tools is empty",
-                              model_recommendation)
                 elif tool_call.function.name == 'where_to_watch_movie':
-                    print("function calling where_to_watch_movie")
                     arguments = json.loads(
                         tool_call.function.arguments)
-                    print("arguments", arguments)
                     name = arguments['movie_name']
                     model_recommendation = where_to_watch_movie(name)
-                    print("model_recommendation", model_recommendation)
-                    if model_recommendation == "":
-                        model_recommendation = "No estoy seguro de dónde puedes ver esta película o serie :("
-                        print("model_recommendation from tools is empty",
-                              model_recommendation)
 
                 else:
                     model_recommendation = "No estoy seguro de dónde puedes ver esta película o serie :("

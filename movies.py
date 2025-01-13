@@ -8,7 +8,7 @@ load_dotenv()
 
 def get_provider_names(data):
     if not data or 'flatrate' not in data:
-        return ""
+        return "No estoy seguro de dónde puedes ver esta película o serie :("
     return ", ".join(provider['provider_name'] for provider in data['flatrate'])
 
 
