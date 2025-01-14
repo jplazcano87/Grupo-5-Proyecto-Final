@@ -29,8 +29,7 @@ def where_to_watch(tv_show_name):
     first_result = results[0]
 
     show_id = first_result["id"]
-    providers_url = f"https://api.themoviedb.org/3/tv/{
-        show_id}/watch/providers"
+    providers_url = f"https://api.themoviedb.org/3/tv/{show_id}/watch/providers"
     try:
         response = requests.get(providers_url, headers=headers, timeout=5)
         data_json = response.json()
@@ -48,8 +47,7 @@ def where_to_watch_movie(movie_name):
     if not first_result:
         return get_provider_names(None)
     show_id = first_result["id"]
-    providers_url = f"https://api.themoviedb.org/3/movie/{
-        show_id}/watch/providers"
+    providers_url = f"https://api.themoviedb.org/3/movie/{show_id}/watch/providers"
     try:
         response = requests.get(providers_url, headers=headers, timeout=5)
         data_json = response.json()
@@ -64,8 +62,7 @@ def where_to_watch_movie(movie_name):
 def get_movie_id(movie_name):
     print("tv_show_name", movie_name)
 
-    search_url = f"https://api.themoviedb.org/3/search/multi?query={
-        movie_name}&include_adult=false&page=1"
+    search_url = f"https://api.themoviedb.org/3/search/multi?query={movie_name}&include_adult=false&page=1"
     resp = requests.get(search_url, headers=headers, timeout=5)
     data = resp.json()
     results = data.get("results")
