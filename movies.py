@@ -20,8 +20,7 @@ def get_provider_names(data):
 
 def where_to_watch(tv_show_name):
     print("tv_show_name", tv_show_name)
-    search_url = f"https://api.themoviedb.org/3/search/multi?query={
-        tv_show_name}&include_adult=false&page=1"
+    search_url = f"https://api.themoviedb.org/3/search/multi?query={tv_show_name}&include_adult=false&page=1"
     resp = requests.get(search_url, headers=headers, timeout=5)
     data = resp.json()
     results = data.get("results")
