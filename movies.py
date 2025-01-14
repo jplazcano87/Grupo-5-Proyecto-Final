@@ -95,3 +95,14 @@ def get_movie_or_show_trailer(movie_or_show_name):
 
     except (requests.RequestException, KeyError, ValueError):
         return "No encontré trailer de esa serie o pelicula"
+
+
+def get_current_movies_in_theatres():
+    url = "https://api.themoviedb.org/3/movie/now_playing?language=es-ES&page=1&region=CL"
+    try:
+        response = requests.get(url, headers=headers, timeout=5)
+        data = response.json()
+        movies = data.get('results', [])
+        return ", ".join(movie['title'] for movie in movies)
+    except (requests.RequestException, KeyError, ValueError):
+        return "No pude encontrar películas en cartelera"

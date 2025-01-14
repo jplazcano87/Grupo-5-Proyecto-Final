@@ -2,7 +2,7 @@ import json
 from flask import jsonify, render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, current_user, login_required
 from models import User, Message
-from movies import where_to_watch, where_to_watch_movie, get_movie_or_show_trailer
+from movies import where_to_watch, where_to_watch_movie, get_movie_or_show_trailer, get_current_movies_in_theatres
 
 
 tools = [
@@ -64,6 +64,13 @@ tools = [
                 },
                 "additionalProperties": False
             }
+        },
+    },
+    {
+        'type': 'function',
+        'function': {
+            "name": "get_current_movies_in_theatres",
+            "description": "Get a list of movies that are currently in theatres."
         },
     }
 ]
@@ -186,6 +193,8 @@ def register_routes(app, db, bcrypt, open_ia):
                     name = arguments['movie_or_show_name']
                     model_recommendation = get_movie_or_show_trailer(
                         name)
+                elif tool_call.function.name == 'get_current_movies_in_theatres':
+                    model_recommendation = get_current_movies_in_theatres()
                 else:
                     model_recommendation = "No estoy seguro de dónde puedes ver esta película o serie :("
             else:

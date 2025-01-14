@@ -35,11 +35,9 @@ plAI (BETA)
               <img class="bg-white" src="{{ url_for('static', filename='plai-chat.png') }}" alt="avatar 1"
                 style="width: 45px; height: 100%;">
               <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
-                {% if '<' in message.content and '>' in message.content %}
-                  {{ message.content | safe }}
-                {% else %}
-                  <p class="small mb-0">{{message.content}}</p>
-                {% endif %}
+                {% if '<' in message.content and '>' in message.content %} {{ message.content | safe }} {% else %} <p
+                  class="small mb-0">{{message.content}}</p>
+                  {% endif %}
               </div>
             </div>
             {% else %}
@@ -64,10 +62,10 @@ plAI (BETA)
             </form>
             <form method="POST">
               <div class="input-group mb-3">
-                <input name="message" required="required" class="form-control form-control-lg"
+                <input name="message" id="message-input" required="required" class="form-control form-control-lg"
                   placeholder="Enviar mensaje a plAI" aria-label="Tu mensaje" aria-describedby="send-message" />
-                <input type="submit" class="btn btn-lg" id="send-message" name="intent" value="Enviar"
-                  style="background-color: #30B9DC; color: #0A2E43;" />
+                <input type="submit" id="send-message-2" class=" btn btn-lg" id="send-message" name="intent"
+                  value="Enviar" style="background-color: #30B9DC; color: #0A2E43;" />
               </div>
             </form>
           </div>
@@ -79,6 +77,17 @@ plAI (BETA)
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     window.scrollTo(0, document.body.scrollHeight);
+  });
+
+  let messageInput = document.getElementById("message-input");
+  let submitButton = document.getElementById("send-message-2");
+
+  messageInput.addEventListener("input", (event) => {
+    if (event.target.value.length > 0) {
+      submitButton.classList.remove("disabled");
+    } else {
+      submitButton.classList.add("disabled");
+    }
   });
 </script>
 
