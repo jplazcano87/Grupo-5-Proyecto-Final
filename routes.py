@@ -1,6 +1,79 @@
+import json
 from flask import jsonify, render_template, request, redirect, url_for
 from flask_login import login_user, logout_user, current_user, login_required
 from models import User, Message
+from movies import where_to_watch, where_to_watch_movie, get_movie_or_show_trailer, get_current_movies_in_theatres
+
+
+tools = [
+    {
+        'type': 'function',
+        'function': {
+            "name": "where_to_watch",
+            "description": "Returns a list of platforms where a specified tv show can be watched. don't use for movies",
+            "parameters": {
+                "type": "object",
+                "required": [
+                    "tv_show_name"
+                ],
+                "properties": {
+                    "tv_show_name": {
+                        "type": "string",
+                        "description": "The name of the tv show to search for"
+                    }
+                },
+                "additionalProperties": False
+            }
+        },
+    },
+    {
+        'type': 'function',
+        'function': {
+            "name": "where_to_watch_movie",
+            "description": "Returns information about a specified movie. don't use for tv shows",
+            "parameters": {
+                "type": "object",
+                "required": [
+                    "movie_name"
+                ],
+                "properties": {
+                    "movie_name": {
+                        "type": "string",
+                        "movie_name": "The name of the movie show to search for"
+                    }
+                },
+                "additionalProperties": False
+            }
+        },
+    },
+    {
+        'type': 'function',
+        'function': {
+            "name": "get_movie_or_show_trailer",
+            "description": "Returns a youtube link to the trailer of a specified movie or tv show",
+            "parameters": {
+                "type": "object",
+                "required": [
+                    "movie_or_show_name"
+                ],
+                "properties": {
+                    "movie_or_show_name": {
+                        "type": "string",
+                        "movie_or_show_name": "The name of the movie show or tv show to search for"
+                    }
+                },
+                "additionalProperties": False
+            }
+        },
+    },
+    {
+        'type': 'function',
+        'function': {
+            "name": "get_current_movies_in_theatres",
+            "description": "Get a list of movies that are currently in theatres."
+        },
+    }
+]
 
 
 def register_routes(app, db, bcrypt, open_ia):
@@ -27,7 +100,7 @@ def register_routes(app, db, bcrypt, open_ia):
                 password).decode('utf-8'), birthdate=birthdate, gender=gender)
 
             message = Message(
-                content="Hola! Soy Muby, un recomendador de películas. ¿En qué te puedo ayudar?", author="assistant", user=user)
+                content="Hola! Soy plaIA, un recomendador de películas. ¿En qué te puedo ayudar?", author="assistant", user=user)
 
             db.session.add(user)
             db.session.add(message)
@@ -48,10 +121,10 @@ def register_routes(app, db, bcrypt, open_ia):
                 password = data.get('password')
 
                 user = db.session.query(User).filter_by(email=email).first()
-                print(f'User: {user}, password: {password}')
-            if user and bcrypt.check_password_hash(user.password, password):
-                login_user(user)
-                print(f'User logged ok: {user}')
+
+                if user and bcrypt.check_password_hash(user.password, password):
+                    login_user(user)
+
                 return redirect(url_for('chat'))
 
             return 'Invalid credentials', 401
@@ -87,7 +160,7 @@ def register_routes(app, db, bcrypt, open_ia):
 
             messages_for_llm = [{
                 "role": "system",
-                "content": f"Eres un chatbot que recomienda películas, te llamas 'Next Moby'. Tu rol es responder recomendaciones de manera breve y concisa. No repitas recomendaciones. usa el genéro del usuario {user.gender}  y su  fecha de nacimiento {user.birthdate} para recomendar películas. ",
+                "content": f"Eres un chatbot que recomienda películas, te llamas 'PlaIA'. Tu rol es responder recomendaciones de manera breve y concisa. No repitas recomendaciones. usa el genéro del usuario {user.gender}  y su  fecha de nacimiento {user.birthdate} para recomendar películas. ",
             }]
 
             for message in user.messages:
@@ -99,10 +172,34 @@ def register_routes(app, db, bcrypt, open_ia):
             chat_completion = open_ia.chat.completions.create(
                 messages=messages_for_llm,
                 model="gpt-4o",
-                temperature=1
+                temperature=1,
+                tools=tools
             )
 
-            model_recommendation = chat_completion.choices[0].message.content
+            if chat_completion.choices[0].message.tool_calls:
+                tool_call = chat_completion.choices[0].message.tool_calls[0]
+                if tool_call.function.name == 'where_to_watch':
+                    arguments = json.loads(tool_call.function.arguments)
+                    name = arguments['tv_show_name']
+                    model_recommendation = where_to_watch(name)
+                elif tool_call.function.name == 'where_to_watch_movie':
+                    arguments = json.loads(
+                        tool_call.function.arguments)
+                    name = arguments['movie_name']
+                    model_recommendation = where_to_watch_movie(name)
+                elif tool_call.function.name == 'get_movie_or_show_trailer':
+                    arguments = json.loads(
+                        tool_call.function.arguments)
+                    name = arguments['movie_or_show_name']
+                    model_recommendation = get_movie_or_show_trailer(
+                        name)
+                elif tool_call.function.name == 'get_current_movies_in_theatres':
+                    model_recommendation = get_current_movies_in_theatres()
+                else:
+                    model_recommendation = "No estoy seguro de dónde puedes ver esta película o serie :("
+            else:
+                model_recommendation = chat_completion.choices[0].message.content
+
             db.session.add(Message(content=model_recommendation,
                                    author="assistant", user=user))
             db.session.commit()
