@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Registro plAI{% endblock %}
+
+{% block content %}
+<section style="background-color: #30B9DC; min-height: 100vh;">
+  <div class="container py-5">
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col col-xl-10">
+        <div class="card rounded-3" style="border-radius: .8rem;">
+          <img src="{{ url_for('static', filename='registro.jpg') }}" class="w-100"
+            style="border-top-left-radius: .5rem; border-top-right-radius: .5rem;" alt="Registro">
+          <div class="card-body p-4 p-md-5">
+            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2">Registro</h3>
+
+            <form class="px-md-2" action="{{ url_for('auth.signup') }}" method="POST">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <label class="form-label" for="username">Nombre de usuario</label>
+                  <input type="text" name="username" id="username" maxlength="50"
+                    class="form-control form-control-lg" required />
+                </div>
+                <div class="col-md-6 mb-4">
+                  <label class="form-label" for="email">Email</label>
+                  <input type="email" name="email" id="email" class="form-control form-control-lg" required />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <label class="form-label" for="password">Contraseña</label>
+                  <input type="password" name="password" id="password" minlength="8"
+                    class="form-control form-control-lg" required />
+                </div>
+                <div class="col-md-6 mb-4">
+                  <label class="form-label" for="repeat_password">Repetir contraseña</label>
+                  <input type="password" name="repeat_password" id="repeat_password" minlength="8"
+                    class="form-control form-control-lg" required />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <label class="form-label" for="birthdate">Fecha de Nacimiento</label>
+                  <input type="date" name="birthdate" id="birthdate" class="form-control form-control-lg" required>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <label class="form-label" for="gender">Género</label>
+                  <select name="gender" id="gender" class="form-select form-select-lg" required>
+                    <option value="" selected disabled>Selecciona…</option>
+                    <option value="Mujer">Mujer</option>
+                    <option value="Hombre">Hombre</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-lg mb-1"
+                style="background-color: #30B9DC; color: #0A2E43;">Registrarme</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

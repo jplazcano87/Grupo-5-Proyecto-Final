@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}
+plAI (BETA)
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary sticky-top">
+  <div class="container-fluid">
+    <span class="navbar-brand">Bienvenido {{ username }}</span>
+
+    <ul class="navbar-nav flex-row align-items-center">
+      <li class="nav-item me-3">
+        <a class="nav-link active" aria-current="page" href="{{ url_for('chat.profile') }}">Profile</a>
+      </li>
+      <li class="nav-item">
+        <form method="POST" action="{{ url_for('auth.logout') }}" class="m-0">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-link nav-link">Logout</button>
+        </form>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<section class="container-fluid py-5 h-100" style="background-color: #30B9DC;">
+  <div class="container-fluid py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card mb-3" style="border-radius: .8rem;">
+
+          <div class="container col-xxl-8 px-4 py-5">
+            {% for message in messages %}
+            {% if message.author == 'assistant' %}
+            <div class="d-flex flex-row justify-content-start mb-4">
+              <img class="bg-white" src="{{ url_for('static', filename='plai-chat.png') }}" alt="plAI"
+                style="width: 45px; height: 100%;">
+              <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
+                <p class="small mb-0" style="white-space: pre-line;">{{ message.content | chat_text }}</p>
+              </div>
+            </div>
+            {% else %}
+            <div class="d-flex flex-row justify-content-end mb-4">
+              <div class="p-3 me-3 border bg-body-tertiary" style="border-radius: 15px;">
+                <p class="small mb-0" style="white-space: pre-line;">{{ message.content }}</p>
+              </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+
+            <form method="POST">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <div class="d-flex flex-wrap">
+                <input type="submit" class="btn btn-primary m-1" name="intent"
+                  value="Recomienda algo al azar" style="background-color: #30B9DC; color: #0A2E43;" />
+                <input type="submit" class="btn btn-primary m-1" name="intent"
+                  value="Recomienda series de acción" style="background-color: #30B9DC; color: #0A2E43;" />
+                <input type="submit" class="btn btn-primary m-1" name="intent"
+                  value="Recomienda películas de suspenso" style="background-color: #30B9DC; color: #0A2E43;" />
+              </div>
+            </form>
+            <form method="POST">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <div class="input-group mb-3">
+                <input name="message" id="message-input" required maxlength="1000"
+                  class="form-control form-control-lg" placeholder="Enviar mensaje a plAI"
+                  aria-label="Tu mensaje" autocomplete="off" />
+                <input type="submit" id="send-message" class="btn btn-lg disabled" name="intent"
+                  value="Enviar" style="background-color: #30B9DC; color: #0A2E43;" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    window.scrollTo(0, document.body.scrollHeight);
+  });
+
+  const messageInput = document.getElementById("message-input");
+  const submitButton = document.getElementById("send-message");
+
+  messageInput.addEventListener("input", (event) => {
+    submitButton.classList.toggle("disabled", event.target.value.trim().length === 0);
+  });
+</script>
+
+{% endblock %}

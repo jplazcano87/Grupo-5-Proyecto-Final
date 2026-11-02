@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es" data-bs-theme="light">
+    <head>
+        {% block head %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap">
+
+        {% block styles %}
+            {{ bootstrap.load_css() }}
+        {% endblock %}
+
+        <title>{% block title %}plAI: ¡Descúbrelo todo!{% endblock %}</title>
+        {% endblock %}
+    </head>
+    <body>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="container pt-3" style="position: relative; z-index: 10;">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category if category in ('success', 'danger', 'info', 'warning') else 'info' }} mb-2" role="alert">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+
+        {% block scripts %}
+            {{ bootstrap.load_js() }}
+        {% endblock %}
+    </body>
+</html>

@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "plai"
+version = "0.2.0"
+description = "PlaIA: a movie and TV recommender chatbot built on Claude tool use"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+    { name = "Barbara Castillo" },
+    { name = "Andres Ruggieri Lusso" },
+    { name = "Juan Pablo Lazcano" },
+]
+dependencies = [
+    "anthropic>=1.0",
+    "bootstrap-flask>=2.4",
+    "flask>=3.1",
+    "flask-bcrypt>=1.0.1",
+    "flask-login>=0.6.3",
+    "flask-migrate>=4.0",
+    "flask-sqlalchemy>=3.1",
+    "flask-wtf>=1.2",
+    "gunicorn>=23.0",
+    "python-dotenv>=1.0",
+    "requests>=2.32",
+]
+
+[project.optional-dependencies]
+# Remote Turso/libSQL database (set DATABASE_URL to a sqlite+libsql:// URL).
+turso = ["sqlalchemy-libsql"]
+dev = ["pytest>=8", "pytest-mock>=3.14", "ruff>=0.8"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/plai"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]
+"migrations/*" = ["I", "UP"]
