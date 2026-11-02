@@ -30,7 +30,7 @@ dependencies = [
 [project.optional-dependencies]
 # Remote Turso/libSQL database (set DATABASE_URL to a sqlite+libsql:// URL).
 turso = ["sqlalchemy-libsql"]
-dev = ["pytest>=8", "pytest-mock>=3.14", "ruff>=0.8"]
+dev = ["pytest>=8", "pytest-mock>=3.17.0", "ruff>=0.8"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/plai"]
