@@ -15,7 +15,7 @@ authors = [
 ]
 dependencies = [
     "anthropic>=2.3.0",
-    "bootstrap-flask>=2.4",
+    "bootstrap-flask>=2.6.0",
     "flask>=3.1",
     "flask-bcrypt>=1.0.1",
     "flask-login>=0.6.3",
